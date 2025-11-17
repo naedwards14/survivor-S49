@@ -562,11 +562,12 @@
         }
 
         .grid-scoring-table th {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);  ← CHANGE 0.1 to 0.15
             font-weight: bold;
             position: sticky;
             top: 0;
-            z-index: 5;
+            z-index: 10;                          ← CHANGE 5 to 10
+            backdrop-filter: blur(10px);          ← ADD
         }
 
         .grid-scoring-table .category-header {
@@ -826,6 +827,10 @@
             background: rgba(255,255,255,0.1);
             font-weight: bold;
             font-size: 0.95em;
+            position: sticky;           ← ADD
+            top: 0;                     ← ADD  
+            z-index: 10;                ← ADD
+            backdrop-filter: blur(10px);← ADD
         }
 
         .score-entry-table input {
