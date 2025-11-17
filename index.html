@@ -1626,18 +1626,34 @@
                                 : b.left - a.left;
                         } else {
                             // When contestants left are equal, sort by total points (descending)
-                            let aPoints = 0, bPoints = 0;
-                            a.picks.forEach(pick => aPoints += contestantTotals[pick] || 0);
-                            b.picks.forEach(pick => bPoints += contestantTotals[pick] || 0);
-                            return bPoints - aPoints; // Always descending for tiebreaker
+                            // UPDATED: Include attendance points
+                            let aContestantPoints = 0, bContestantPoints = 0;
+                            a.picks.forEach(pick => aContestantPoints += contestantTotals[pick] || 0);
+                            b.picks.forEach(pick => bContestantPoints += contestantTotals[pick] || 0);
+                            
+                            let aAttendance = data.attendanceData[a.player] ? data.attendanceData[a.player].reduce((sum, val) => sum + val, 0) : 0;
+                            let bAttendance = data.attendanceData[b.player] ? data.attendanceData[b.player].reduce((sum, val) => sum + val, 0) : 0;
+                            
+                            let aTotalPoints = aContestantPoints + aAttendance;
+                            let bTotalPoints = bContestantPoints + bAttendance;
+                            
+                            return bTotalPoints - aTotalPoints; // Always descending for tiebreaker
                         }
                     } else if (draftSortConfig.key === 'points') {
-                        let aPoints = 0, bPoints = 0;
-                        a.picks.forEach(pick => aPoints += contestantTotals[pick] || 0);
-                        b.picks.forEach(pick => bPoints += contestantTotals[pick] || 0);
+                        // UPDATED: Include attendance points when sorting by points
+                        let aContestantPoints = 0, bContestantPoints = 0;
+                        a.picks.forEach(pick => aContestantPoints += contestantTotals[pick] || 0);
+                        b.picks.forEach(pick => bContestantPoints += contestantTotals[pick] || 0);
+                        
+                        let aAttendance = data.attendanceData[a.player] ? data.attendanceData[a.player].reduce((sum, val) => sum + val, 0) : 0;
+                        let bAttendance = data.attendanceData[b.player] ? data.attendanceData[b.player].reduce((sum, val) => sum + val, 0) : 0;
+                        
+                        let aTotalPoints = aContestantPoints + aAttendance;
+                        let bTotalPoints = bContestantPoints + bAttendance;
+                        
                         return draftSortConfig.direction === 'asc'
-                            ? aPoints - bPoints
-                            : bPoints - aPoints;
+                            ? aTotalPoints - bTotalPoints
+                            : bTotalPoints - aTotalPoints;
                     }
                     return 0;
                 });
@@ -1680,10 +1696,20 @@
                                 </thead>
                                 <tbody>
                                     {sortedDraftData.map((entry, idx) => {
-                                        let totalPoints = 0;
+                                        // UPDATED: Calculate contestant points separately
+                                        let contestantPoints = 0;
                                         entry.picks.forEach(pick => {
-                                            totalPoints += contestantTotals[pick] || 0;
+                                            contestantPoints += contestantTotals[pick] || 0;
                                         });
+                                        
+                                        // UPDATED: Add attendance points
+                                        let attendancePoints = 0;
+                                        if (data.attendanceData[entry.player]) {
+                                            attendancePoints = data.attendanceData[entry.player].reduce((sum, val) => sum + val, 0);
+                                        }
+                                        
+                                        // UPDATED: Calculate total with both contestant and attendance points
+                                        let totalPoints = contestantPoints + attendancePoints;
             
                                         return (
                                             <tr key={idx}>
