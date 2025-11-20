@@ -1038,24 +1038,24 @@
                 }
                 return {
                     contestants: [
-                        { name: "Alex", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 9 },
-                        { name: "Jawan", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null },
-                        { name: "Kristina", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null },
-                        { name: "Rizo", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null },
-                        { name: "Sage", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null },
-                        { name: "Savannah", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null },
-                        { name: "Sophi", tribe: "Kele", originalTribe: "Kele", eliminated: false, eliminatedWeek: null },
-                        { name: "Sophie", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null },
-                        { name: "Steven", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null },
-                        { name: "Annie", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 2 },
-                        { name: "Jake", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 3 },
-                        { name: "Jason", tribe: "Voted Out", originalTribe: "Hina", eliminated: true, eliminatedWeek: 5 },
-                        { name: "Jeremiah", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 3 },
-                        { name: "Matt", tribe: "Voted Out", originalTribe: "Hina", eliminated: true, eliminatedWeek: 4 },
-                        { name: "MC", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 8 },
-                        { name: "Nate", tribe: "Voted Out", originalTribe: "Uli", eliminated: true, eliminatedWeek: 7 },
-                        { name: "Nicole", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 1 },
-                        { name: "Shannon", tribe: "Voted Out", originalTribe: "Uli", eliminated: true, eliminatedWeek: 6 }
+                        { name: "Alex", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 9, advantages: [] },
+                        { name: "Jawan", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: [] },
+                        { name: "Kristina", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: ["idol"] },
+                        { name: "Rizo", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: ["idol"] },
+                        { name: "Sage", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: [] },
+                        { name: "Savannah", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: ["extra_vote"] },
+                        { name: "Sophi", tribe: "Kele", originalTribe: "Kele", eliminated: false, eliminatedWeek: null, advantages: ["knowledge_is_power"] },
+                        { name: "Sophie", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: [] },
+                        { name: "Steven", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: [] },
+                        { name: "Annie", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 2, advantages: [] },
+                        { name: "Jake", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 3, advantages: [] },
+                        { name: "Jason", tribe: "Voted Out", originalTribe: "Hina", eliminated: true, eliminatedWeek: 5, advantages: [] },
+                        { name: "Jeremiah", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 3, advantages: [] },
+                        { name: "Matt", tribe: "Voted Out", originalTribe: "Hina", eliminated: true, eliminatedWeek: 4, advantages: [] },
+                        { name: "MC", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 8, advantages: [] },
+                        { name: "Nate", tribe: "Voted Out", originalTribe: "Uli", eliminated: true, eliminatedWeek: 7, advantages: [] },
+                        { name: "Nicole", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 1, advantages: [] },
+                        { name: "Shannon", tribe: "Voted Out", originalTribe: "Uli", eliminated: true, eliminatedWeek: 6, advantages: [] }
                     ],
                     weeklyScores: {
                         1: { "Alex": 0, "Annie": 0, "Nicole": -0.5, "Sophi": 0, "Jeremiah": 0, "Jake": 0, "Jawan": 0.75, "Nate": 0.5, "Rizo": 1, "Sage": 0.5, "Savannah": 0.5, "Shannon": 0.5, "Kristina": 2, "Matt": 2, "MC": 2, "Jason": 2, "Sophie": 2, "Steven": 2 },
@@ -1437,6 +1437,15 @@
                     const playerDraft = data.draftData.find(d => d.player === player.player);
                     const playerPicks = playerDraft ? playerDraft.picks : [];
                     
+                    // Count advantages held by this player's active contestants
+                    let advantageCount = 0;
+                    playerPicks.forEach(pick => {
+                        const contestant = data.contestants.find(c => c.name === pick && !c.eliminated);
+                        if (contestant?.advantages) {
+                            advantageCount += contestant.advantages.length;
+                        }
+                    });
+                    
                     // Count how many contestants this player shares with players ahead of them
                     let sharedWithHigher = 0;
                     let totalOverlapInstances = 0;
@@ -1460,7 +1469,8 @@
                         ...player,
                         uniqueContestants: Math.max(0, uniqueContestants),
                         overlapPenalty: overlapPenalty,
-                        sharedWithHigher: sharedWithHigher
+                        sharedWithHigher: sharedWithHigher,
+                        advantageCount: advantageCount
                     };
                 });
                 
@@ -1486,26 +1496,30 @@
                     player.mathematicallyEliminated = player.maxFinalScore < leaderMinScore;
                 });
                 
-                // Step 3: Calculate "strength" for each player using weighted formula
                 const calculateStrength = (player, rank) => {
                     if (player.mathematicallyEliminated) return 0.01;
                     
                     // Weight breakdown:
-                    // 55% - Current score position (being ahead NOW matters most)
-                    // 30% - Unique contestant advantage (roster diversification from leaders)
+                    // 50% - Current score position (being ahead NOW matters most)
+                    // 25% - Unique contestant advantage (roster diversification from leaders)
                     // 15% - Raw contestants remaining
+                    // 10% - Advantages held (idols, extra votes boost survival)
                     
                     const maxCurrentScore = leader.totalPoints;
-                    const positionStrength = (player.totalPoints / maxCurrentScore) * 0.55;
+                    const positionStrength = (player.totalPoints / maxCurrentScore) * 0.50;
                     
                     // Unique advantage: penalize heavily for roster overlap with leaders
-                    const uniqueAdvantage = (1 - player.overlapPenalty) * 0.30;
+                    const uniqueAdvantage = (1 - player.overlapPenalty) * 0.25;
                     
                     // Contestants remaining (normalized to max)
                     const maxContestants = Math.max(...playersWithOverlap.map(p => p.contestantsLeft));
                     const contestantStrength = (player.contestantsLeft / maxContestants) * 0.15;
                     
-                    const totalStrength = positionStrength + uniqueAdvantage + contestantStrength;
+                    // Advantage bonus: idols and extra votes increase survival odds
+                    const maxAdvantages = Math.max(...playersWithOverlap.map(p => p.advantageCount || 0), 1);
+                    const advantageStrength = ((player.advantageCount || 0) / maxAdvantages) * 0.10;
+                    
+                    const totalStrength = positionStrength + uniqueAdvantage + contestantStrength + advantageStrength;
                     
                     return Math.max(0.01, totalStrength);
                 };
@@ -1538,8 +1552,8 @@
                     <div className="content-section">
                         <h2 className="section-title">🏆 Current Standings 🏆</h2>
                         <div className="info-banner" style={{marginBottom: '20px'}}>
-                            <strong>Win Probability Weights:</strong> Current Position (70%) | Roster Diversification (20%) | Contestants Left (10%)<br/>
-                            <strong>Key Factor:</strong> Shared contestants with leaders reduce your catch-up ability significantly.
+                            <strong>Win Probability Weights:</strong> Current Position (50%) | Roster Diversification (25%) | Contestants Left (15%) | Advantages Held (10%)<br/>
+                            <strong>Key Factors:</strong> Shared contestants with leaders reduce catch-up ability. Advantages (idols, extra votes) boost survival odds.
                         </div>
                         <div className="leaderboard">
                             {playersWithOverlap.map((entry, index) => {
