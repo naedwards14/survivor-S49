@@ -1032,12 +1032,24 @@
 
             // Load data from localStorage or use initial data
             const getInitialData = () => {
-                const savedData = localStorage.getItem('survivorLeagueData');
-                if (savedData) {
-                    return JSON.parse(savedData);
-                }
-                return {
-                    contestants: [
+                const getInitialData = () => {
+                    const DATA_VERSION = 9; // Week 9 - INCREMENT THIS NUMBER EACH WEEK
+                    
+                    const savedVersion = localStorage.getItem('survivorDataVersion');
+                    
+                    // Force refresh if version changed
+                    if (savedVersion != DATA_VERSION) {
+                        localStorage.removeItem('survivorLeagueData');
+                        localStorage.setItem('survivorDataVersion', DATA_VERSION);
+                    }
+                    
+                    const savedData = localStorage.getItem('survivorLeagueData');
+                    if (savedData && savedVersion == DATA_VERSION) {
+                        return JSON.parse(savedData);
+                    }
+                    
+                    return {
+                        contestants: [
                         { name: "Alex", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 9, advantages: [] },
                         { name: "Jawan", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: [] },
                         { name: "Kristina", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: ["idol"] },
