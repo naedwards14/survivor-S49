@@ -1038,7 +1038,7 @@
                 }
                 return {
                     contestants: [
-                        { name: "Alex", tribe: "Kele", originalTribe: "Kele", eliminated: false, eliminatedWeek: null },
+                        { name: "Alex", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 9 },
                         { name: "Jawan", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null },
                         { name: "Kristina", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null },
                         { name: "Rizo", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null },
@@ -1066,7 +1066,7 @@
                         6: { "Alex": 1, "Annie": 0, "Nicole": 0, "Sophi": 2, "Jeremiah": 0, "Jake": 0, "Jawan": 0.75, "Nate": 1, "Rizo": 2.25, "Sage": 0.75, "Savannah": 2, "Shannon": -0.5, "Kristina": 1, "Matt": 0, "MC": 2, "Jason": 0, "Sophie": 1, "Steven": 0.75 },
                         7: { "Alex": 1, "Annie": 0, "Nicole": 0, "Sophi": 2, "Jeremiah": 0, "Jake": 0, "Jawan": 1, "Nate": 0.5, "Rizo": 3.25, "Sage": 1.5, "Savannah": 1, "Shannon": 0, "Kristina": 1, "Matt": 0, "MC": 1, "Jason": 0, "Sophie": 4, "Steven": 2 },
                         8: { "Alex": 1, "Annie": 0, "Nicole": 0, "Sophi": 1, "Jeremiah": 0, "Jake": 0, "Jawan": 1, "Nate": 0, "Rizo": 2, "Sage": 1, "Savannah": 2.75, "Shannon": 0, "Kristina": 1, "Matt": 0, "MC": -0.5, "Jason": 0, "Sophie": 1, "Steven": 1 },
-                        9: {},
+                        9: { "Alex": 0.5, "Annie": 0, "Nicole": 0, "Sophi": 2, "Jeremiah": 0, "Jake": 0, "Jawan": 1, "Nate": 0, "Rizo": 2.25, "Sage": 1, "Savannah": 4, "Shannon": 0, "Kristina": 3, "Matt": 0, "MC": 0, "Jason": 0, "Sophie": 2, "Steven": 3 },
                         10: {},
                         11: {},
                         12: {},
@@ -1260,24 +1260,24 @@
                         { player: "Mel", picks: ["Rizo", "MC", "Jason", "Matt", "Jeremiah", "Kristina"], left: 2 }
                     ],
                     attendanceData: {
-                        "Dan": [0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
+                        "Dan": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],      // Changed index 7 from 0 to 2
                         "Julie": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
                         "Lindsay": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
                         "Brett/Emma": [0, 2, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0],
                         "Jack": [0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
                         "Gab": [0, 2, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0],
                         "Neil": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
-                        "Jenny": [0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
-                        "David": [0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
-                        "Sue": [0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
-                        "Ryan": [0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
+                        "Jenny": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],    // Changed from 0 to 2
+                        "David": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],    // Changed from 0 to 2
+                        "Sue": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],      // Changed from 0 to 2
+                        "Ryan": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],     // Changed from 0 to 2
                         "Jason": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
-                        "Alex": [0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
-                        "Debbie": [0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
+                        "Alex": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],     // Changed from 0 to 2
+                        "Debbie": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],   // Changed from 0 to 2
                         "Kristen": [0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0],
-                        "Jenn": [0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
-                        "Mel": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0]
-                    },
+                        "Jenn": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],     // Changed from 0 to 2
+                        "Mel": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0]       // Already had 2
+                    }
                     eliminationTimeline: [
                         { week: 1, contestant: "Nicole", reason: "Voted out at the first Tribal Council for being perceived as a weaker player in challenges." },
                         { week: 2, contestant: "Annie", reason: "Voted out after her strategic maneuvering put a target on her back." },
@@ -1288,6 +1288,7 @@
                         { week: 6, contestant: "Shannon", reason: "Voted out." },
                         { week: 7, contestant: "Nate", reason: "The first member of the jury; blindsided at the first post-merge Tribal Council." },
                         { week: 8, contestant: "MC", reason: "The second member of the jury; voted out after an intense live Tribal Council where her attempt to share new information backfired." }
+                        { week: 9, contestant: "Alex", reason: "The third member of the jury; blindsided with 6 votes after being caught playing both sides. Rizo led the charge against him, while his allies Steven and Kristina were also blindsided. Alex's exit makes Sophi the sole remaining Kele tribe member." }
                     ],
                     winnerCircles: [
                         { season: 48, first: "Julie", second: "Jack", third: "Gab" },
