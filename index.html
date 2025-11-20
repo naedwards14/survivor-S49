@@ -2353,7 +2353,11 @@
                     return scoring;
                 });
 
-                const [votedOutThisWeek, setVotedOutThisWeek] = useState(null);
+                const [votedOutThisWeek, setVotedOutThisWeek] = useState(() => {
+                    // Check if anyone was eliminated this week
+                    const eliminatedThisWeek = data.contestants.find(c => c.eliminatedWeek === selectedWeek);
+                    return eliminatedThisWeek ? eliminatedThisWeek.name : null;
+                });
 
                 // Update checkbox states when week changes
                 useEffect(() => {
@@ -2372,7 +2376,10 @@
                     });
                     
                     setContestantScoring(newScoring);
-                    setVotedOutThisWeek(null);
+                    
+                    // Check if anyone was eliminated this week
+                    const eliminatedThisWeek = data.contestants.find(c => c.eliminatedWeek === selectedWeek);
+                    setVotedOutThisWeek(eliminatedThisWeek ? eliminatedThisWeek.name : null);
                 }, [selectedWeek]);
 
                 const handleCheckboxChange = (contestant, categoryId) => {
