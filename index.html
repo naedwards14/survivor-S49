@@ -989,7 +989,7 @@
 
         const SurvivorLeague = () => {
             const [activeView, setActiveView] = useState('leaderboard');
-            const [selectedWeek, setSelectedWeek] = useState(8);
+            const [selectedWeek, setSelectedWeek] = useState(9);
             const [sortConfig, setSortConfig] = useState({ key: null, direction: 'desc' });
             const [draftSortConfig, setDraftSortConfig] = useState({ key: 'left', direction: 'desc' });
             const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -1453,8 +1453,8 @@
                 // 🎯 ENHANCED WIN PROBABILITY CALCULATION WITH ROSTER OVERLAP
                 // ═══════════════════════════════════════════════════════════════════
                 
-                const remainingWeeks = 13 - 8; // 5 weeks left
-                const COMPLETED_WEEKS = 8;
+                const remainingWeeks = 13 - 9; // 4 weeks left
+                const COMPLETED_WEEKS = 9;
                 
                 // Historical scoring data - avg points per week across all contestants
                 const AVG_POINTS_PER_WEEK_REMAINING = 1.0;  // Conservative estimate
@@ -1632,7 +1632,7 @@
                         <div className="summary-stats">
                             <div className="stat-card">
                                 <div className="stat-label">Episodes Completed</div>
-                                <div className="stat-value">8/13</div>
+                                <div className="stat-value">9/13</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">Episodes Remaining</div>
@@ -2104,7 +2104,7 @@
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Jury Members</div>
-                            <div className="stat-value">2</div>
+                            <div className="stat-value">3</div>
                         </div>
                     </div>
                 </div>
