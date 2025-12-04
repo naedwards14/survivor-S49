@@ -939,30 +939,6 @@
     <div id="root"></div>
 
     <script type="text/babel">
-    /*
-    ═══════════════════════════════════════════════════════════════════
-    🔒 PASSWORD PROTECTION SETUP
-    ═══════════════════════════════════════════════════════════════════
-    
-    The "Score Entry" and "Edit Attendance" tabs are password-protected.
-    
-    🔑 TO CHANGE THE PASSWORD:
-       1. Open browser console (F12)
-       2. Run: await crypto.subtle.digest('SHA-256', new TextEncoder().encode('YourNewPassword'))
-               .then(h => Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''))
-       3. Replace ADMIN_PASSWORD_HASH below with the output
-    
-    📖 ALL OTHER TABS ARE PUBLIC - no password required to view:
-       - Leaderboard
-       - Draft Board  
-       - Contestants
-       - Weekly Scores
-       - Eliminations
-       - Attendance (view only)
-    
-    ═══════════════════════════════════════════════════════════════════
-    */
-    
     const { useState, useEffect, useMemo } = React;
 
         // Scoring categories and their point values
@@ -989,50 +965,13 @@
 
         const SurvivorLeague = () => {
             const [activeView, setActiveView] = useState('leaderboard');
-            const [selectedWeek, setSelectedWeek] = useState(9);
+            const [selectedWeek, setSelectedWeek] = useState(10);
             const [sortConfig, setSortConfig] = useState({ key: null, direction: 'desc' });
             const [draftSortConfig, setDraftSortConfig] = useState({ key: 'left', direction: 'desc' });
-            const [isAuthenticated, setIsAuthenticated] = useState(false);
-            
-            // Password protection for edit tabs
-            // IMPORTANT: This is a SHA-256 hash of your password, not the actual password
-            // To generate a new hash:
-            // 1. Open browser console (F12)
-            // 2. Run: await crypto.subtle.digest('SHA-256', new TextEncoder().encode('YourNewPassword'))
-            //         .then(h => Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''))
-            // 3. Replace ADMIN_PASSWORD_HASH with the output
-            const ADMIN_PASSWORD_HASH = "79cabb80ef88b6ea26f794772c2844433113f784fe98e4b0e2adc36d012bd34c";
-            
-            const hashPassword = async (password) => {
-                const encoder = new TextEncoder();
-                const data = encoder.encode(password);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            };
-            
-            const checkPassword = async (targetView) => {
-                if (targetView === 'entry' || targetView === 'attendanceEntry') {
-                    if (!isAuthenticated) {
-                        const enteredPassword = prompt('🔒 Enter password to access edit functions:');
-                        if (enteredPassword !== null) {
-                            const enteredHash = await hashPassword(enteredPassword);
-                            if (enteredHash === ADMIN_PASSWORD_HASH) {
-                                setIsAuthenticated(true);
-                                setActiveView(targetView);
-                            } else {
-                                alert('❌ Incorrect password. Access denied.');
-                            }
-                        }
-                        return;
-                    }
-                }
-                setActiveView(targetView);
-            };
 
             // Load data from localStorage or use initial data
             const getInitialData = () => {
-                const DATA_VERSION = 9; // Week 9 - INCREMENT THIS NUMBER EACH WEEK
+                const DATA_VERSION = 10; // Week 10 - INCREMENT THIS NUMBER EACH WEEK
                 
                 const savedVersion = localStorage.getItem('survivorDataVersion');
                 
@@ -1050,11 +989,11 @@
                 return {
                     contestants: [
                         { name: "Alex", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 9, advantages: [] },
-                        { name: "Jawan", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: [] },
-                        { name: "Kristina", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: ["idol"] },
+                        { name: "Jawan", tribe: "Voted Out", originalTribe: "Uli", eliminated: true, eliminatedWeek: 10, advantages: [] },
+                        { name: "Kristina", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: [] },
                         { name: "Rizo", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: ["idol"] },
                         { name: "Sage", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: [] },
-                        { name: "Savannah", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: ["extra_vote"] },
+                        { name: "Savannah", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: [] },
                         { name: "Sophi", tribe: "Kele", originalTribe: "Kele", eliminated: false, eliminatedWeek: null, advantages: ["knowledge_is_power"] },
                         { name: "Sophie", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: [] },
                         { name: "Steven", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: [] },
@@ -1078,7 +1017,7 @@
                         7: { "Alex": 1, "Annie": 0, "Nicole": 0, "Sophi": 2, "Jeremiah": 0, "Jake": 0, "Jawan": 1, "Nate": 0.5, "Rizo": 3.25, "Sage": 1.5, "Savannah": 1, "Shannon": 0, "Kristina": 1, "Matt": 0, "MC": 1, "Jason": 0, "Sophie": 4, "Steven": 2 },
                         8: { "Alex": 1, "Annie": 0, "Nicole": 0, "Sophi": 1, "Jeremiah": 0, "Jake": 0, "Jawan": 1, "Nate": 0, "Rizo": 2, "Sage": 1, "Savannah": 2.75, "Shannon": 0, "Kristina": 1, "Matt": 0, "MC": -0.5, "Jason": 0, "Sophie": 1, "Steven": 1 },
                         9: { "Alex": 0.5, "Annie": 0, "Nicole": 0, "Sophi": 2, "Jeremiah": 0, "Jake": 0, "Jawan": 1, "Nate": 0, "Rizo": 2.25, "Sage": 1, "Savannah": 4, "Shannon": 0, "Kristina": 3, "Matt": 0, "MC": 0, "Jason": 0, "Sophie": 2, "Steven": 3 },
-                        10: {},
+                        10: { "Alex": 0, "Annie": 0, "Nicole": 0, "Sophi": 2, "Jeremiah": 0, "Jake": 0, "Jawan": -0.5, "Nate": 0, "Rizo": 2, "Sage": 2, "Savannah": 1, "Shannon": 0, "Kristina": 1, "Matt": 0, "MC": 0, "Jason": 0, "Sophie": 4, "Steven": 2.25 },
                         11: {},
                         12: {},
                         13: {}
@@ -1246,67 +1185,86 @@
                             "Steven": {"team_immunity": true}
                         },
                         9: {
-                            "Alex": {"shot_in_dark": true},
+                            "Alex": {"mini_reward": true},
                             "Annie": {},
                             "Nicole": {},
-                            "Sophi": {"team_immunity": true, "individual_immunity": true},
+                            "Sophi": {"team_reward": true, "postmerge_survive": true},
                             "Jeremiah": {},
                             "Jake": {},
                             "Jawan": {"postmerge_survive": true},
                             "Nate": {},
-                            "Rizo": {"postmerge_survive": true, "individual_immunity": true, "title_quote": true},
+                            "Rizo": {"postmerge_survive": true, "idol_tribal": true, "title_quote": true},
                             "Sage": {"postmerge_survive": true},
-                            "Savannah": {"postmerge_survive": true, "individual_immunity": true, "team_reward": true, "individual_reward": true},
+                            "Savannah": {"postmerge_survive": true, "individual_reward": true, "team_reward": true},
                             "Shannon": {},
-                            "Kristina": {"postmerge_survive": true, "team_immunity": true, "individual_immunity": true},
+                            "Kristina": {"postmerge_survive": true, "team_reward": true, "idol_tribal": true},
                             "Matt": {},
                             "MC": {},
                             "Jason": {},
-                            "Sophie": {"postmerge_survive": true, "individual_immunity": true},
-                            "Steven": {"postmerge_survive": true, "team_immunity": true, "individual_immunity": true}
+                            "Sophie": {"postmerge_survive": true},
+                            "Steven": {"postmerge_survive": true, "team_reward": true, "individual_reward": true}
                         },
-                        10: {},
+                        10: {
+                            "Alex": {},
+                            "Annie": {},
+                            "Nicole": {},
+                            "Sophi": {"team_reward": true, "postmerge_survive": true},
+                            "Jeremiah": {},
+                            "Jake": {},
+                            "Jawan": {"shot_in_dark": true},
+                            "Nate": {},
+                            "Rizo": {"idol_tribal": true, "postmerge_survive": true},
+                            "Sage": {"team_reward": true, "postmerge_survive": true},
+                            "Savannah": {"postmerge_survive": true},
+                            "Shannon": {},
+                            "Kristina": {"postmerge_survive": true},
+                            "Matt": {},
+                            "MC": {},
+                            "Jason": {},
+                            "Sophie": {"team_reward": true, "individual_reward": true, "postmerge_survive": true},
+                            "Steven": {"team_reward": true, "title_quote": true, "postmerge_survive": true}
+                        },
                         11: {},
                         12: {},
                         13: {}
                     },
                     draftData: [
                         { player: "Dan", picks: ["Savannah", "Rizo", "Kristina", "Nate", "Sage", "Annie"], left: 4 },
-                        { player: "Julie", picks: ["Savannah", "Alex", "Sophi", "Nate", "Kristina", "Annie"], left: 4 },
-                        { player: "Lindsay", picks: ["Alex", "Steven", "Sophi", "Shannon", "Jawan", "Annie"], left: 4 },
+                        { player: "Julie", picks: ["Savannah", "Alex", "Sophi", "Nate", "Kristina", "Annie"], left: 3 },
+                        { player: "Lindsay", picks: ["Alex", "Steven", "Sophi", "Shannon", "Jawan", "Annie"], left: 2 },
                         { player: "Brett/Emma", picks: ["Savannah", "Nate", "Sophi", "Shannon", "Matt", "Annie"], left: 2 },
-                        { player: "Jack", picks: ["Jake", "Alex", "Shannon", "Nate", "Matt", "Annie"], left: 1 },
-                        { player: "Gab", picks: ["Savannah", "Alex", "Rizo", "Annie", "Jawan", "Sage"], left: 5 },
+                        { player: "Jack", picks: ["Jake", "Alex", "Shannon", "Nate", "Matt", "Annie"], left: 0 },
+                        { player: "Gab", picks: ["Savannah", "Alex", "Rizo", "Annie", "Jawan", "Sage"], left: 3 },
                         { player: "Neil", picks: ["Savannah", "Jake", "Rizo", "Nate", "Matt", "Sage"], left: 3 },
-                        { player: "Jenny", picks: ["Savannah", "Alex", "Sophi", "Jason", "Nate", "Sophie"], left: 4 },
+                        { player: "Jenny", picks: ["Savannah", "Alex", "Sophi", "Jason", "Nate", "Sophie"], left: 3 },
                         { player: "David", picks: ["Jake", "MC", "Steven", "Jason", "Jeremiah", "Sophie"], left: 2 },
-                        { player: "Sue", picks: ["Jake", "MC", "Sophi", "Sage", "Jawan", "Sophie"], left: 4 },
-                        { player: "Ryan", picks: ["Jake", "MC", "Rizo", "Steven", "Jawan", "Sophie"], left: 4 },
-                        { player: "Jason", picks: ["Jason", "MC", "Steven", "Shannon", "Jawan", "Sophie"], left: 3 },
-                        { player: "Alex", picks: ["Rizo", "Alex", "Sophi", "Matt", "Kristina", "Sage"], left: 5 },
-                        { player: "Debbie", picks: ["Jake", "MC", "Shannon", "Jawan", "Kristina", "Jeremiah"], left: 2 },
+                        { player: "Sue", picks: ["Jake", "MC", "Sophi", "Sage", "Jawan", "Sophie"], left: 3 },
+                        { player: "Ryan", picks: ["Jake", "MC", "Rizo", "Steven", "Jawan", "Sophie"], left: 3 },
+                        { player: "Jason", picks: ["Jason", "MC", "Steven", "Shannon", "Jawan", "Sophie"], left: 2 },
+                        { player: "Alex", picks: ["Rizo", "Alex", "Sophi", "Matt", "Kristina", "Sage"], left: 4 },
+                        { player: "Debbie", picks: ["Jake", "MC", "Shannon", "Jawan", "Kristina", "Jeremiah"], left: 1 },
                         { player: "Kristen", picks: ["Jason", "Steven", "Matt", "Jeremiah", "Jeremiah", "Sophie"], left: 2 },
                         { player: "Jenn", picks: ["Jason", "Shannon", "Steven", "Jeremiah", "Kristina", "Sage"], left: 3 },
                         { player: "Mel", picks: ["Rizo", "MC", "Jason", "Matt", "Jeremiah", "Kristina"], left: 2 }
                     ],
                     attendanceData: {
-                        "Dan": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
-                        "Julie": [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
-                        "Lindsay": [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
-                        "Brett/Emma": [0, 2, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0],
-                        "Jack": [0, 2, 0, 2, 2, 0, 0, 0, 2, 0, 0, 0, 0],
-                        "Gab": [0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 0, 0, 0],
-                        "Neil": [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
-                        "Jenny": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
-                        "David": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
-                        "Sue": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
-                        "Ryan": [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
-                        "Jason": [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
-                        "Alex": [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
-                        "Debbie": [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
-                        "Kristen": [0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0],
-                        "Jenn": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
-                        "Mel": [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0]
+                        "Dan": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Julie": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Lindsay": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Brett/Emma": [2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        "Jack": [2, 0, 2, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+                        "Gab": [2, 0, 2, 2, 0, 2, 2, 2, 0, 0, 0, 0, 0],
+                        "Neil": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Jenny": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "David": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Sue": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Ryan": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Jason": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Alex": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Debbie": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+                        "Kristen": [2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0],
+                        "Jenn": [2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
+                        "Mel": [2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0]
                     },
                     eliminationTimeline: [
                         { week: 1, contestant: "Nicole", reason: "Voted out at the first Tribal Council for being perceived as a weaker player in challenges." },
@@ -1318,7 +1276,8 @@
                         { week: 6, contestant: "Shannon", reason: "Voted out." },
                         { week: 7, contestant: "Nate", reason: "The first member of the jury; blindsided at the first post-merge Tribal Council." },
                         { week: 8, contestant: "MC", reason: "The second member of the jury; voted out after an intense live Tribal Council where her attempt to share new information backfired." },
-                        { week: 9, contestant: "Alex", reason: "The third member of the jury. Blindsided with 6 votes after being caught playing both sides by Rizo, while his allies Steven and Kristina were also blindsided voting for Sophi." }
+                        { week: 9, contestant: "Alex", reason: "The third member of the jury. Blindsided with 6 votes after being caught playing both sides by Rizo, while his allies Steven and Kristina were also blindsided voting for Sophi." },
+                        { week: 10, contestant: "Jawan", reason: "The fourth member of the jury. Voted out 5-3-1 after Savannah used her Extra Vote advantage. Kristina played her idol on Steven, and Rizo played a fake idol for dramatic effect." }
                     ],
                     winnerCircles: [
                         { season: 48, first: "Julie", second: "Jack", third: "Gab" },
@@ -1453,8 +1412,8 @@
                 // 🎯 ENHANCED WIN PROBABILITY CALCULATION WITH ROSTER OVERLAP
                 // ═══════════════════════════════════════════════════════════════════
                 
-                const remainingWeeks = 13 - 9; // 4 weeks left
-                const COMPLETED_WEEKS = 9;
+                const remainingWeeks = 13 - 10; // 3 weeks left
+                const COMPLETED_WEEKS = 10;
                 
                 // Historical scoring data - avg points per week across all contestants
                 const AVG_POINTS_PER_WEEK_REMAINING = 1.0;  // Conservative estimate
@@ -1632,15 +1591,15 @@
                         <div className="summary-stats">
                             <div className="stat-card">
                                 <div className="stat-label">Episodes Completed</div>
-                                <div className="stat-value">9/13</div>
+                                <div className="stat-value">10/13</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">Episodes Remaining</div>
-                                <div className="stat-value">5</div>
+                                <div className="stat-value">3</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">Contestants Remaining</div>
-                                <div className="stat-value">9</div>
+                                <div className="stat-value">7</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">League Players</div>
@@ -2092,11 +2051,11 @@
                     <div className="summary-stats">
                         <div className="stat-card">
                             <div className="stat-label">Total Eliminations</div>
-                            <div className="stat-value">9</div>
+                            <div className="stat-value">11</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Voted Out</div>
-                            <div className="stat-value">8</div>
+                            <div className="stat-value">10</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Medical Evacuations</div>
@@ -2104,7 +2063,7 @@
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Jury Members</div>
-                            <div className="stat-value">3</div>
+                            <div className="stat-value">4</div>
                         </div>
                     </div>
                 </div>
@@ -2255,401 +2214,12 @@
             );
             };
 
-            const AttendanceEntry = () => {
-                const [editableAttendance, setEditableAttendance] = useState(() => {
-                    return JSON.parse(JSON.stringify(data.attendanceData));
-                });
-
-                const handleAttendanceChange = (player, weekIndex, value) => {
-                    const numValue = parseInt(value) || 0;
-                    setEditableAttendance(prev => {
-                        const updated = { ...prev };
-                        updated[player] = [...updated[player]];
-                        updated[player][weekIndex] = numValue;
-                        return updated;
-                    });
-                };
-
-                const handleSave = () => {
-                    const newData = {
-                        ...data,
-                        attendanceData: editableAttendance
-                    };
-                    setData(newData);
-                    alert('✅ Attendance data saved!\n\n✨ Leaderboard has been updated with new attendance points!');
-                };
-
-                const players = Object.keys(data.attendanceData).sort();
-
-                return (
-                    <div className="content-section">
-                        <h2 className="section-title">✏️ Edit Attendance ✏️</h2>
-                        
-                        <div className="info-banner">
-                            Edit attendance for each player. Enter 2 for attended, 0 for missed. Changes save to browser storage.
-                        </div>
-
-                        <div className="score-entry-container">
-                            <div style={{overflowX: 'auto'}}>
-                                <table className="score-entry-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Player</th>
-                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map(week => (
-                                                <th key={week}>Week {week}</th>
-                                            ))}
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {players.map((player, idx) => {
-                                            const total = editableAttendance[player].reduce((sum, val) => sum + val, 0);
-                                            return (
-                                                <tr key={idx}>
-                                                    <td style={{fontWeight: 'bold', textAlign: 'left', paddingLeft: '15px'}}>
-                                                        {player}
-                                                    </td>
-                                                    {editableAttendance[player].map((value, weekIdx) => (
-                                                        <td key={weekIdx}>
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                max="2"
-                                                                step="1"
-                                                                value={value}
-                                                                onChange={(e) => handleAttendanceChange(player, weekIdx, e.target.value)}
-                                                                style={{width: '50px'}}
-                                                            />
-                                                        </td>
-                                                    ))}
-                                                    <td style={{fontWeight: 'bold', color: '#4ecca3'}}>
-                                                        {total}
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div style={{textAlign: 'center'}}>
-                                <button className="save-button" onClick={handleSave}>
-                                    💾 Save Attendance Data
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                );
-            };
-
-            const ScoreEntry = () => {
-                // Initialize checkbox states from saved data or empty
-                const [contestantScoring, setContestantScoring] = useState(() => {
-                    const savedStates = data.weeklyCheckboxStates[selectedWeek] || {};
-                    const scoring = {};
-                    
-                    sortedContestants.forEach(contestant => {
-                        if (savedStates[contestant.name]) {
-                            // Load saved checkbox states
-                            scoring[contestant.name] = { ...savedStates[contestant.name] };
-                        } else {
-                            // Initialize empty
-                            scoring[contestant.name] = {};
-                            scoringCategories.forEach(cat => {
-                                scoring[contestant.name][cat.id] = false;
-                            });
-                        }
-                    });
-                    
-                    return scoring;
-                });
-
-                const [votedOutThisWeek, setVotedOutThisWeek] = useState(() => {
-                    // Check if anyone was eliminated this week
-                    const eliminatedThisWeek = data.contestants.find(c => c.eliminatedWeek === selectedWeek);
-                    return eliminatedThisWeek ? eliminatedThisWeek.name : null;
-                });
-
-                // Update checkbox states when week changes
-                useEffect(() => {
-                    const savedStates = data.weeklyCheckboxStates[selectedWeek] || {};
-                    const newScoring = {};
-                    
-                    sortedContestants.forEach(contestant => {
-                        if (savedStates[contestant.name]) {
-                            newScoring[contestant.name] = { ...savedStates[contestant.name] };
-                        } else {
-                            newScoring[contestant.name] = {};
-                            scoringCategories.forEach(cat => {
-                                newScoring[contestant.name][cat.id] = false;
-                            });
-                        }
-                    });
-                    
-                    setContestantScoring(newScoring);
-                    
-                    // Check if anyone was eliminated this week
-                    const eliminatedThisWeek = data.contestants.find(c => c.eliminatedWeek === selectedWeek);
-                    setVotedOutThisWeek(eliminatedThisWeek ? eliminatedThisWeek.name : null);
-                }, [selectedWeek]);
-
-                const handleCheckboxChange = (contestant, categoryId) => {
-                    setContestantScoring(prev => ({
-                        ...prev,
-                        [contestant]: {
-                            ...prev[contestant],
-                            [categoryId]: !prev[contestant][categoryId]
-                        }
-                    }));
-                };
-
-                const handleVotedOutChange = (contestant) => {
-                    if (votedOutThisWeek === contestant) {
-                        setVotedOutThisWeek(null);
-                    } else {
-                        setVotedOutThisWeek(contestant);
-                    }
-                };
-
-                const calculateContestantScore = (contestant) => {
-                    let total = 0;
-                    scoringCategories.forEach(cat => {
-                        if (contestantScoring[contestant]?.[cat.id]) {
-                            total += cat.points;
-                        }
-                    });
-                    return total;
-                };
-
-                const handleSaveAll = () => {
-                    // Calculate scores for all contestants
-                    const newWeekScores = {};
-                    sortedContestants.forEach(contestant => {
-                        newWeekScores[contestant.name] = calculateContestantScore(contestant.name);
-                    });
-                    
-                    // Create properly immutable update - this ensures React detects the change
-                    let updatedContestants = [...data.contestants];
-                    let updatedDraftData = [...data.draftData];
-                    
-                    // Handle elimination
-                    if (votedOutThisWeek) {
-                        updatedContestants = updatedContestants.map(c => 
-                            c.name === votedOutThisWeek 
-                                ? { ...c, eliminated: true, eliminatedWeek: selectedWeek, tribe: "Voted Out" }
-                                : c
-                        );
-                        
-                        // Update draft data to reflect new contestant count
-                        updatedDraftData = updatedDraftData.map(entry => {
-                            if (entry.picks.includes(votedOutThisWeek)) {
-                                return { ...entry, left: entry.left - 1 };
-                            }
-                            return entry;
-                        });
-                    }
-                    
-                    // Create new data object with all updates (properly immutable)
-                    const newData = {
-                        ...data,
-                        contestants: updatedContestants,
-                        draftData: updatedDraftData,
-                        weeklyScores: {
-                            ...data.weeklyScores,
-                            [selectedWeek]: newWeekScores
-                        },
-                        weeklyCheckboxStates: {
-                            ...data.weeklyCheckboxStates,
-                            [selectedWeek]: JSON.parse(JSON.stringify(contestantScoring))
-                        }
-                    };
-                    
-                    setData(newData);
-                    
-                    // Show success message
-                    setTimeout(() => {
-                        alert(`✅ Week ${selectedWeek} scores saved!\n${votedOutThisWeek ? `🔥 ${votedOutThisWeek} marked as eliminated.\n` : ''}\n✨ All tabs have been updated!\n\n💡 Switch to Leaderboard or Contestants tab to see the changes!`);
-                    }, 100);
-                };
-
-                const activeContestantsForWeek = sortedContestants.filter(contestant => {
-                    return !contestant.eliminated || contestant.eliminatedWeek >= selectedWeek;
-                }).sort((a, b) => {
-                    const tribeOrder = { "Hina": 1, "Kele": 2, "Uli": 3 };
-                    const aTribe = a.originalTribe || a.tribe;
-                    const bTribe = b.originalTribe || b.tribe;
-                    const tribeDiff = tribeOrder[aTribe] - tribeOrder[bTribe];
-                    if (tribeDiff !== 0) return tribeDiff;
-                    return a.name.localeCompare(b.name);
-                });
-
-                return (
-                    <div className="content-section">
-                        <h2 className="section-title">✏️ LIVE SCORING GRID ✏️</h2>
-                        
-                        <div className="info-banner">
-                            ⚡ Check boxes LIVE as things happen during the show! Totals calculate automatically. When you save, ALL tabs update globally with the new scores! 🔄
-                        </div>
-
-                        <div className="week-selector">
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map(week => (
-                                <button
-                                    key={week}
-                                    className={`week-button ${selectedWeek === week ? 'active' : ''}`}
-                                    onClick={() => setSelectedWeek(week)}
-                                >
-                                    Week {week}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="score-entry-container">
-                            <div className="info-banner warning" style={{marginTop: '15px'}}>
-                                📊 Week {selectedWeek} - Showing {activeContestantsForWeek.length} active contestants
-                            </div>
-
-                            <div style={{overflowX: 'auto'}}>
-                                <table className="grid-scoring-table">
-                                    <thead>
-                                        <tr>
-                                            <th className="category-header">Scoring Category</th>
-                                            {activeContestantsForWeek.map(contestant => {
-                                                const displayTribe = contestant.originalTribe || contestant.tribe;
-                                                const tribeClass = displayTribe === "Hina" ? "tribe-hina" : 
-                                                                 displayTribe === "Kele" ? "tribe-kele" : 
-                                                                 displayTribe === "Uli" ? "tribe-uli" : "";
-                                                const isEliminatedThisWeek = contestant.eliminated && contestant.eliminatedWeek === selectedWeek;
-                                                
-                                                return (
-                                                    <th 
-                                                        key={contestant.name} 
-                                                        className="contestant-header"
-                                                    >
-                                                        <span className={`contestant-tribe ${tribeClass}`} style={{
-                                                            padding: '8px 12px',
-                                                            borderRadius: '8px',
-                                                            display: 'inline-block',
-                                                            fontSize: '1em',
-                                                            writingMode: 'horizontal-tb',
-                                                            whiteSpace: 'nowrap'
-                                                        }}>
-                                                            {contestant.name}
-                                                            {isEliminatedThisWeek && <div style={{color: '#e74c3c', fontSize: '0.75em', marginTop: '3px'}}>🔥 OUT</div>}
-                                                        </span>
-                                                    </th>
-                                                );
-                                            })}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {scoringCategories.map(cat => (
-                                            <tr key={cat.id}>
-                                                <td className="category-header">
-                                                    {cat.name}
-                                                    <span className={`category-points ${cat.points < 0 ? 'negative' : ''}`}>
-                                                        ({cat.points >= 0 ? '+' : ''}{cat.points})
-                                                    </span>
-                                                </td>
-                                                {activeContestantsForWeek.map(contestant => (
-                                                    <td key={contestant.name}>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={contestantScoring[contestant.name]?.[cat.id] || false}
-                                                            onChange={() => handleCheckboxChange(contestant.name, cat.id)}
-                                                        />
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                        <tr style={{background: 'rgba(231, 76, 60, 0.15)', borderTop: '3px solid #e74c3c'}}>
-                                            <td className="category-header" style={{fontWeight: 'bold', color: '#e74c3c'}}>
-                                                🔥 VOTED OUT THIS WEEK
-                                            </td>
-                                            {activeContestantsForWeek.map(contestant => {
-                                                return (
-                                                    <td key={contestant.name}>
-                                                        <input
-                                                            type="radio"
-                                                            name={`eliminated-week-${selectedWeek}`}
-                                                            checked={votedOutThisWeek === contestant.name}
-                                                            style={{width: '20px', height: '20px', cursor: 'pointer'}}
-                                                            onChange={() => handleVotedOutChange(contestant.name)}
-                                                            title="Mark as voted out this week"
-                                                        />
-                                                    </td>
-                                                );
-                                            })}
-                                        </tr>
-                                        <tr className="total-row">
-                                            <td className="category-header">
-                                                <strong>TOTAL POINTS</strong>
-                                            </td>
-                                            {activeContestantsForWeek.map(contestant => {
-                                                const total = calculateContestantScore(contestant.name);
-                                                return (
-                                                    <td key={contestant.name} className="total-points-cell">
-                                                        {total >= 0 ? '+' : ''}{total.toFixed(2)}
-                                                    </td>
-                                                );
-                                            })}
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div style={{textAlign: 'center', marginTop: '30px'}}>
-                                <button className="save-button" onClick={handleSaveAll}>
-                                    💾 Save Week {selectedWeek} Scores - Updates ALL Tabs!
-                                </button>
-                            </div>
-
-                            <div className="info-banner" style={{marginTop: '20px'}}>
-                                <strong>📝 Scoring Reference</strong><br/>
-                                Team reward/immunity: 1pt • Individual reward/immunity: 2pts • Post-merge survival: 1pt<br/>
-                                Title quote: 0.25pt • Mini reward: 0.5pt • Idol held at tribal: 1pt • Voted out with shot in dark: -0.5pt
-                            </div>
-                        </div>
-                    </div>
-                );
-            };
-
 
             return (
                 <div className="app-container">
                     <div className="header">
                         <img src="data:image/jpeg;base64,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" alt="Survivor 49 Logo" className="header-logo" />
                         <div className="subtitle">FANTASY LEAGUE TRACKER</div>
-                        {isAuthenticated && (
-                            <div style={{
-                                marginTop: '15px',
-                                padding: '8px 15px',
-                                background: 'rgba(78,204,163,0.2)',
-                                border: '1px solid rgba(78,204,163,0.4)',
-                                borderRadius: '20px',
-                                display: 'inline-block',
-                                fontSize: '0.9em'
-                            }}>
-                                ✅ Admin Mode Active
-                                <button 
-                                    onClick={() => {
-                                        setIsAuthenticated(false);
-                                        setActiveView('leaderboard');
-                                    }}
-                                    style={{
-                                        marginLeft: '10px',
-                                        padding: '4px 12px',
-                                        background: 'rgba(255,255,255,0.2)',
-                                        border: '1px solid rgba(255,255,255,0.3)',
-                                        borderRadius: '12px',
-                                        color: 'white',
-                                        cursor: 'pointer',
-                                        fontSize: '0.85em'
-                                    }}
-                                >
-                                    🔓 Logout
-                                </button>
-                            </div>
-                        )}
                     </div>
 
                     <div className="navigation">
@@ -2689,18 +2259,6 @@
                         >
                             👑 Winner Circles
                         </button>
-                        <button 
-                            className={`nav-button ${activeView === 'attendanceEntry' ? 'active' : ''}`}
-                            onClick={() => checkPassword('attendanceEntry')}
-                        >
-                            🔒 Edit Attendance
-                        </button>
-                        <button 
-                            className={`nav-button ${activeView === 'entry' ? 'active' : ''}`}
-                            onClick={() => checkPassword('entry')}
-                        >
-                            🔒 Score Entry
-                        </button>
                     </div>
 
                     {activeView === 'leaderboard' && renderLeaderboard()}
@@ -2709,8 +2267,6 @@
                     {activeView === 'weekly' && renderWeeklyScores()}
                     {activeView === 'attendance' && renderAttendance()}
                     {activeView === 'winners' && renderWinnerCircles()}
-                    {activeView === 'attendanceEntry' && <AttendanceEntry />}
-                    {activeView === 'entry' && <ScoreEntry />}
                 </div>
             );
         };
