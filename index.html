@@ -965,13 +965,13 @@
 
         const SurvivorLeague = () => {
             const [activeView, setActiveView] = useState('leaderboard');
-            const [selectedWeek, setSelectedWeek] = useState(10);
+            const [selectedWeek, setSelectedWeek] = useState(11);
             const [sortConfig, setSortConfig] = useState({ key: null, direction: 'desc' });
             const [draftSortConfig, setDraftSortConfig] = useState({ key: 'left', direction: 'desc' });
 
             // Load data from localStorage or use initial data
             const getInitialData = () => {
-                const DATA_VERSION = 10; // Week 10 - INCREMENT THIS NUMBER EACH WEEK
+                const DATA_VERSION = 11; // Week 11 - INCREMENT THIS NUMBER EACH WEEK
                 
                 const savedVersion = localStorage.getItem('survivorDataVersion');
                 
@@ -995,8 +995,8 @@
                         { name: "Sage", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: [] },
                         { name: "Savannah", tribe: "Uli", originalTribe: "Uli", eliminated: false, eliminatedWeek: null, advantages: [] },
                         { name: "Sophi", tribe: "Kele", originalTribe: "Kele", eliminated: false, eliminatedWeek: null, advantages: ["knowledge_is_power"] },
-                        { name: "Sophie", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: [] },
-                        { name: "Steven", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: [] },
+                        { name: "Sophie", tribe: "Voted Out", originalTribe: "Hina", eliminated: true, eliminatedWeek: 11, advantages: [] },
+                        { name: "Steven", tribe: "Hina", originalTribe: "Hina", eliminated: false, eliminatedWeek: null, advantages: ["block_a_vote"] },
                         { name: "Annie", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 2, advantages: [] },
                         { name: "Jake", tribe: "Voted Out", originalTribe: "Kele", eliminated: true, eliminatedWeek: 3, advantages: [] },
                         { name: "Jason", tribe: "Voted Out", originalTribe: "Hina", eliminated: true, eliminatedWeek: 5, advantages: [] },
@@ -1018,7 +1018,7 @@
                         8: { "Alex": 1, "Annie": 0, "Nicole": 0, "Sophi": 1, "Jeremiah": 0, "Jake": 0, "Jawan": 1, "Nate": 0, "Rizo": 2, "Sage": 1, "Savannah": 2.75, "Shannon": 0, "Kristina": 1, "Matt": 0, "MC": -0.5, "Jason": 0, "Sophie": 1, "Steven": 1 },
                         9: { "Alex": 0.5, "Annie": 0, "Nicole": 0, "Sophi": 2, "Jeremiah": 0, "Jake": 0, "Jawan": 1, "Nate": 0, "Rizo": 2.25, "Sage": 1, "Savannah": 4, "Shannon": 0, "Kristina": 3, "Matt": 0, "MC": 0, "Jason": 0, "Sophie": 2, "Steven": 3 },
                         10: { "Alex": 0, "Annie": 0, "Nicole": 0, "Sophi": 2, "Jeremiah": 0, "Jake": 0, "Jawan": -0.5, "Nate": 0, "Rizo": 2, "Sage": 2, "Savannah": 1, "Shannon": 0, "Kristina": 1, "Matt": 0, "MC": 0, "Jason": 0, "Sophie": 4, "Steven": 2.25 },
-                        11: {},
+                        11: { "Alex": 0, "Annie": 0, "Nicole": 0, "Sophi": 1, "Jeremiah": 0, "Jake": 0, "Jawan": 0, "Nate": 0, "Rizo": 3, "Sage": 2, "Savannah": 1, "Shannon": 0, "Kristina": 2, "Matt": 0, "MC": 0, "Jason": 0, "Sophie": -0.5, "Steven": 3.5 },
                         12: {},
                         13: {}
                     },
@@ -1224,7 +1224,26 @@
                             "Sophie": {"team_reward": true, "individual_reward": true, "postmerge_survive": true},
                             "Steven": {"team_reward": true, "title_quote": true, "postmerge_survive": true}
                         },
-                        11: {},
+                        11: {
+                            "Alex": {},
+                            "Annie": {},
+                            "Nicole": {},
+                            "Sophi": {"postmerge_survive": true},
+                            "Jeremiah": {},
+                            "Jake": {},
+                            "Jawan": {},
+                            "Nate": {},
+                            "Rizo": {"taken_reward": true, "idol_tribal": true, "postmerge_survive": true},
+                            "Sage": {"team_reward": true, "postmerge_survive": true},
+                            "Savannah": {"postmerge_survive": true},
+                            "Shannon": {},
+                            "Kristina": {"taken_reward": true, "postmerge_survive": true},
+                            "Matt": {},
+                            "MC": {},
+                            "Jason": {},
+                            "Sophie": {},
+                            "Steven": {"individual_reward": true, "mini_reward": true, "postmerge_survive": true}
+                        },
                         12: {},
                         13: {}
                     },
@@ -1236,33 +1255,33 @@
                         { player: "Jack", picks: ["Jake", "Alex", "Shannon", "Nate", "Matt", "Annie"], left: 0 },
                         { player: "Gab", picks: ["Savannah", "Alex", "Rizo", "Annie", "Jawan", "Sage"], left: 3 },
                         { player: "Neil", picks: ["Savannah", "Jake", "Rizo", "Nate", "Matt", "Sage"], left: 3 },
-                        { player: "Jenny", picks: ["Savannah", "Alex", "Sophi", "Jason", "Nate", "Sophie"], left: 3 },
-                        { player: "David", picks: ["Jake", "MC", "Steven", "Jason", "Jeremiah", "Sophie"], left: 2 },
-                        { player: "Sue", picks: ["Jake", "MC", "Sophi", "Sage", "Jawan", "Sophie"], left: 3 },
-                        { player: "Ryan", picks: ["Jake", "MC", "Rizo", "Steven", "Jawan", "Sophie"], left: 3 },
-                        { player: "Jason", picks: ["Jason", "MC", "Steven", "Shannon", "Jawan", "Sophie"], left: 2 },
+                        { player: "Jenny", picks: ["Savannah", "Alex", "Sophi", "Jason", "Nate", "Sophie"], left: 2 },
+                        { player: "David", picks: ["Jake", "MC", "Steven", "Jason", "Jeremiah", "Sophie"], left: 1 },
+                        { player: "Sue", picks: ["Jake", "MC", "Sophi", "Sage", "Jawan", "Sophie"], left: 2 },
+                        { player: "Ryan", picks: ["Jake", "MC", "Rizo", "Steven", "Jawan", "Sophie"], left: 2 },
+                        { player: "Jason", picks: ["Jason", "MC", "Steven", "Shannon", "Jawan", "Sophie"], left: 1 },
                         { player: "Alex", picks: ["Rizo", "Alex", "Sophi", "Matt", "Kristina", "Sage"], left: 4 },
                         { player: "Debbie", picks: ["Jake", "MC", "Shannon", "Jawan", "Kristina", "Jeremiah"], left: 1 },
-                        { player: "Kristen", picks: ["Jason", "Steven", "Matt", "Jeremiah", "Jeremiah", "Sophie"], left: 2 },
+                        { player: "Kristen", picks: ["Jason", "Steven", "Matt", "Jeremiah", "Jeremiah", "Sophie"], left: 1 },
                         { player: "Jenn", picks: ["Jason", "Shannon", "Steven", "Jeremiah", "Kristina", "Sage"], left: 3 },
                         { player: "Mel", picks: ["Rizo", "MC", "Jason", "Matt", "Jeremiah", "Kristina"], left: 2 }
                     ],
                     attendanceData: {
                         "Dan": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
-                        "Julie": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
-                        "Lindsay": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
+                        "Julie": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0],
+                        "Lindsay": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0],
                         "Brett/Emma": [0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0],
                         "Jack": [0, 2, 0, 2, 2, 0, 0, 0, 2, 0, 0, 0, 0],
-                        "Gab": [0, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0],
-                        "Neil": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
+                        "Gab": [0, 2, 0, 2, 2, 0, 2, 2, 0, 2, 2, 0, 0],
+                        "Neil": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0],
                         "Jenny": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
                         "David": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
-                        "Sue": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
+                        "Sue": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0],
                         "Ryan": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
-                        "Jason": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
+                        "Jason": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0],
                         "Alex": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
                         "Debbie": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
-                        "Kristen": [0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0],
+                        "Kristen": [0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0],
                         "Jenn": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
                         "Mel": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0]
                     },
@@ -1277,7 +1296,8 @@
                         { week: 7, contestant: "Nate", reason: "The first member of the jury; blindsided at the first post-merge Tribal Council." },
                         { week: 8, contestant: "MC", reason: "The second member of the jury; voted out after an intense live Tribal Council where her attempt to share new information backfired." },
                         { week: 9, contestant: "Alex", reason: "The third member of the jury. Blindsided with 6 votes after being caught playing both sides by Rizo, while his allies Steven and Kristina were also blindsided voting for Sophi." },
-                        { week: 10, contestant: "Jawan", reason: "The fourth member of the jury. Voted out 5-3-1 after Savannah used her Extra Vote advantage. Kristina played her idol on Steven, and Rizo played a fake idol for dramatic effect." }
+                        { week: 10, contestant: "Jawan", reason: "The fourth member of the jury. Voted out 5-3-1 after Savannah used her Extra Vote advantage. Kristina played her idol on Steven, and Rizo played a fake idol for dramatic effect." },
+                        { week: 11, contestant: "Sophie", reason: "The fifth member of the jury. Voted out unanimously 5-0 as Sage got her revenge for the Jawan blindside." }
                     ],
                     winnerCircles: [
                         { season: 48, first: "Julie", second: "Jack", third: "Gab" },
@@ -1412,8 +1432,8 @@
                 // 🎯 ENHANCED WIN PROBABILITY CALCULATION WITH ROSTER OVERLAP
                 // ═══════════════════════════════════════════════════════════════════
                 
-                const remainingWeeks = 13 - 10; // 3 weeks left
-                const COMPLETED_WEEKS = 10;
+                const remainingWeeks = 13 - 11; // 2 weeks left
+                const COMPLETED_WEEKS = 11;
                 
                 // Historical scoring data - avg points per week across all contestants
                 const AVG_POINTS_PER_WEEK_REMAINING = 1.0;  // Conservative estimate
@@ -1591,15 +1611,15 @@
                         <div className="summary-stats">
                             <div className="stat-card">
                                 <div className="stat-label">Episodes Completed</div>
-                                <div className="stat-value">10/13</div>
+                                <div className="stat-value">11/13</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">Episodes Remaining</div>
-                                <div className="stat-value">3</div>
+                                <div className="stat-value">2</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">Contestants Remaining</div>
-                                <div className="stat-value">7</div>
+                                <div className="stat-value">6</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">League Players</div>
@@ -2051,11 +2071,11 @@
                     <div className="summary-stats">
                         <div className="stat-card">
                             <div className="stat-label">Total Eliminations</div>
-                            <div className="stat-value">11</div>
+                            <div className="stat-value">12</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Voted Out</div>
-                            <div className="stat-value">10</div>
+                            <div className="stat-value">11</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Medical Evacuations</div>
@@ -2063,7 +2083,7 @@
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Jury Members</div>
-                            <div className="stat-value">4</div>
+                            <div className="stat-value">5</div>
                         </div>
                     </div>
                 </div>
