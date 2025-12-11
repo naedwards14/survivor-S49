@@ -185,19 +185,6 @@
             background: linear-gradient(90deg, rgba(231,76,60,0.2) 0%, rgba(255,255,255,0.08) 100%);
         }
 
-        .win-probability {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #4ecca3;
-            margin-top: 5px;
-        }
-
-        .win-probability-label {
-            font-size: 0.85em;
-            color: #bbb;
-            margin-right: 5px;
-        }
-
         .rank {
             font-size: 2em;
             font-weight: bold;
@@ -914,14 +901,6 @@
                 display: none;
             }
 
-            .win-probability {
-                font-size: 1em;
-            }
-
-            .win-probability-label {
-                display: none;
-            }
-
             .nav-button {
                 padding: 10px 20px;
                 font-size: 0.95em;
@@ -1448,147 +1427,14 @@
             };
 
             const renderLeaderboard = () => {
-                // ═══════════════════════════════════════════════════════════════════
-                // 🎯 ENHANCED WIN PROBABILITY CALCULATION WITH ROSTER OVERLAP
-                // ═══════════════════════════════════════════════════════════════════
-                
-                const remainingWeeks = 13 - 12; // 1 week left
-                const COMPLETED_WEEKS = 12;
-                
-                // Historical scoring data - avg points per week across all contestants
-                const AVG_POINTS_PER_WEEK_REMAINING = 1.0;  // Conservative estimate
-                const MAX_POINTS_PER_WEEK = 1.5;  // Upper bound
-                const MIN_POINTS_PER_WEEK = 0.5;  // Lower bound (if contestant does poorly)
-                
-                // Step 1: Calculate roster overlap between all players
-                const playersWithOverlap = leaderboard.map((player, idx) => {
-                    // Get the actual picks for this player
-                    const playerDraft = data.draftData.find(d => d.player === player.player);
-                    const playerPicks = playerDraft ? playerDraft.picks : [];
-                    
-                    // Count advantages held by this player's active contestants
-                    let advantageCount = 0;
-                    playerPicks.forEach(pick => {
-                        const contestant = data.contestants.find(c => c.name === pick && !c.eliminated);
-                        if (contestant?.advantages) {
-                            advantageCount += contestant.advantages.length;
-                        }
-                    });
-                    
-                    // Count how many contestants this player shares with players ahead of them
-                    let sharedWithHigher = 0;
-                    let totalOverlapInstances = 0;
-                    
-                    for (let i = 0; i < idx; i++) {
-                        const higherPlayer = leaderboard[i];
-                        const higherDraft = data.draftData.find(d => d.player === higherPlayer.player);
-                        const higherPicks = higherDraft ? higherDraft.picks : [];
-                        const overlap = playerPicks.filter(pick => higherPicks.includes(pick)).length;
-                        sharedWithHigher += overlap;
-                        totalOverlapInstances += overlap;
-                    }
-                    
-                    // Calculate unique contestants (only these can help you catch up)
-                    const uniqueContestants = player.contestantsLeft - (sharedWithHigher / Math.max(idx, 1));
-                    
-                    // Overlap penalty: higher = more contestants shared with leaders
-                    const overlapPenalty = idx > 0 ? (sharedWithHigher / (player.contestantsLeft * idx)) : 0;
-                    
-                    return {
-                        ...player,
-                        uniqueContestants: Math.max(0, uniqueContestants),
-                        overlapPenalty: overlapPenalty,
-                        sharedWithHigher: sharedWithHigher,
-                        advantageCount: advantageCount
-                    };
-                });
-                
-                // Step 2: Calculate potential final scores and mathematical elimination
-                const leader = playersWithOverlap[0];
-                
-                playersWithOverlap.forEach(player => {
-                    // Maximum potential if all contestants score high
-                    const maxPotentialGain = player.contestantsLeft * MAX_POINTS_PER_WEEK * remainingWeeks;
-                    player.maxFinalScore = player.totalPoints + maxPotentialGain;
-                    
-                    // Minimum potential if contestants do poorly
-                    const minPotentialGain = player.contestantsLeft * MIN_POINTS_PER_WEEK * remainingWeeks;
-                    player.minFinalScore = player.totalPoints + minPotentialGain;
-                    
-                    // Expected final score (realistic)
-                    const expectedGain = player.uniqueContestants * AVG_POINTS_PER_WEEK_REMAINING * remainingWeeks;
-                    player.expectedFinalScore = player.totalPoints + expectedGain;
-                    
-                    // Check if mathematically eliminated:
-                    // Can't win if your max possible score < leader's minimum possible score
-                    const leaderMinScore = leader.totalPoints + (leader.contestantsLeft * MIN_POINTS_PER_WEEK * remainingWeeks);
-                    player.mathematicallyEliminated = player.maxFinalScore < leaderMinScore;
-                });
-                
-                const calculateStrength = (player, rank) => {
-                    if (player.mathematicallyEliminated) return 0.01;
-                    
-                    // Weight breakdown:
-                    // 50% - Current score position (being ahead NOW matters most)
-                    // 25% - Unique contestant advantage (roster diversification from leaders)
-                    // 15% - Raw contestants remaining
-                    // 10% - Advantages held (idols, extra votes boost survival)
-                    
-                    const maxCurrentScore = leader.totalPoints;
-                    const positionStrength = (player.totalPoints / maxCurrentScore) * 0.50;
-                    
-                    // Unique advantage: penalize heavily for roster overlap with leaders
-                    const uniqueAdvantage = (1 - player.overlapPenalty) * 0.25;
-                    
-                    // Contestants remaining (normalized to max)
-                    const maxContestants = Math.max(...playersWithOverlap.map(p => p.contestantsLeft));
-                    const contestantStrength = (player.contestantsLeft / maxContestants) * 0.15;
-                    
-                    // Advantage bonus: idols and extra votes increase survival odds
-                    const maxAdvantages = Math.max(...playersWithOverlap.map(p => p.advantageCount || 0), 1);
-                    const advantageStrength = ((player.advantageCount || 0) / maxAdvantages) * 0.10;
-                    
-                    const totalStrength = positionStrength + uniqueAdvantage + contestantStrength + advantageStrength;
-                    
-                    return Math.max(0.01, totalStrength);
-                };
-                
-                playersWithOverlap.forEach((player, idx) => {
-                    player.strength = calculateStrength(player, idx);
-                });
-                
-                // Step 4: Apply Pythagorean expectation with balanced exponent
-                // Moderate exponent = competitive race between top players
-                const EXPONENT = 5.0;  // Balanced - reflects close competition
-                
-                const totalPower = playersWithOverlap.reduce((sum, p) => {
-                    return sum + Math.pow(p.strength, EXPONENT);
-                }, 0);
-                
-                playersWithOverlap.forEach(player => {
-                    const rawProbability = (Math.pow(player.strength, EXPONENT) / totalPower) * 100;
-                    player.winProbability = Math.round(rawProbability);
-                });
-                
-                // Step 5: Ensure probabilities sum to 100% (handle rounding)
-                const totalProb = playersWithOverlap.reduce((sum, p) => sum + p.winProbability, 0);
-                if (totalProb !== 100 && playersWithOverlap.length > 0) {
-                    // Add/subtract difference to/from leader
-                    playersWithOverlap[0].winProbability += (100 - totalProb);
-                }
-                
                 return (
                     <div className="content-section">
                         <h2 className="section-title">🏆 Current Standings 🏆</h2>
-                        <div className="info-banner" style={{marginBottom: '20px'}}>
-                            <strong>Win Probability Weights:</strong> Current Position (50%) | Roster Diversification (25%) | Contestants Left (15%) | Advantages Held (10%)<br/>
-                            <strong>Key Factors:</strong> Shared contestants with leaders reduce catch-up ability. Advantages (idols, extra votes) boost survival odds.
-                        </div>
                         <div className="leaderboard">
-                            {playersWithOverlap.map((entry, index) => {
+                            {leaderboard.map((entry, index) => {
                                 // Assign tier colors based on position
                                 let tierClass = '';
-                                const totalPlayers = playersWithOverlap.length;
+                                const totalPlayers = leaderboard.length;
                                 
                                 if (index === 0) {
                                     tierClass = 'rank-1'; // Gold - 1st place
@@ -1616,11 +1462,6 @@
                                             <span>Contestants: {entry.contestantPoints.toFixed(2)} pts</span>
                                             <span>Attendance: {entry.attendancePoints} pts</span>
                                             <span>{entry.contestantsLeft} left</span>
-                                        </div>
-                                        <div className="win-probability">
-                                            <span className="win-probability-label">Win Probability:</span>
-                                            {entry.mathematicallyEliminated ? '<1' : entry.winProbability}%
-                                            {entry.mathematicallyEliminated && <span style={{fontSize: '0.8em', color: '#e74c3c', marginLeft: '5px'}}>(Eliminated)</span>}
                                         </div>
                                     </div>
                                     <div className="total-points">{entry.totalPoints.toFixed(2)}</div>
