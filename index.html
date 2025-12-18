@@ -152,13 +152,13 @@
         }
 
         .leaderboard-item.rank-2 {
-            border-left-color: #f1c40f;
-            background: linear-gradient(90deg, rgba(241,196,15,0.25) 0%, rgba(255,255,255,0.08) 100%);
+            border-left-color: #c0c0c0;
+            background: linear-gradient(90deg, rgba(192,192,192,0.3) 0%, rgba(255,255,255,0.08) 100%);
         }
 
         .leaderboard-item.rank-3 {
-            border-left-color: #f1c40f;
-            background: linear-gradient(90deg, rgba(241,196,15,0.2) 0%, rgba(255,255,255,0.08) 100%);
+            border-left-color: #cd7f32;
+            background: linear-gradient(90deg, rgba(205,127,50,0.3) 0%, rgba(255,255,255,0.08) 100%);
         }
 
         /* Teal tier - Strong contenders */
@@ -1320,7 +1320,7 @@
                         { week: 13, contestant: "Rizo", reason: "Lost the fire-making challenge to Savannah at Final 4. Sophi won immunity and chose to send her two allies into fire, where Savannah prevailed." }
                     ],
                     winnerCircles: [
-                        { season: 49, first: "Dan", second: "Neil", third: "TBD" },
+                        { season: 49, first: "Dan", second: "Alex", third: "Jenny" },
                         { season: 48, first: "Julie", second: "Jack", third: "Gab" },
                         { season: 47, first: "Ian", second: "Neil", third: "Julie" },
                         { season: 46, first: "Julie", second: "Lindsay", third: "Jenn" },
@@ -1485,8 +1485,10 @@
                                 
                                 if (index === 0) {
                                     tierClass = 'rank-1'; // Gold - 1st place
-                                } else if (index <= 2) {
-                                    tierClass = 'rank-2 rank-3'.split(' ')[index - 1]; // Gold - Top 3
+                                } else if (index === 1) {
+                                    tierClass = 'rank-2'; // Silver - 2nd place
+                                } else if (index === 2) {
+                                    tierClass = 'rank-3'; // Bronze - 3rd place
                                 } else if (index <= Math.ceil(totalPlayers * 0.25)) {
                                     tierClass = 'tier-teal'; // Teal - Strong contenders (top 25%)
                                 } else if (index <= Math.ceil(totalPlayers * 0.50)) {
@@ -1502,7 +1504,7 @@
                                     key={entry.player} 
                                     className={`leaderboard-item ${tierClass}`}
                                 >
-                                    <div className="rank">#{index + 1}</div>
+                                    <div className="rank">{index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}</div>
                                     <div>
                                         <div className="player-name">{entry.player}</div>
                                         <div className="player-stats">
