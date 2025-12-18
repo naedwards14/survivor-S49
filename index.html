@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survivor 49 Fantasy League - Enhanced</title>
+    <title>Survivor 49 Fantasy League - FINALE</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -835,7 +835,7 @@
 
         const SurvivorLeague = () => {
             const [activeView, setActiveView] = useState('leaderboard');
-            const [selectedWeek, setSelectedWeek] = useState(8);
+            const [selectedWeek, setSelectedWeek] = useState(13);
             const [sortConfig, setSortConfig] = useState({ key: null, direction: 'desc' });
 
             // Load data from localStorage or use initial data
@@ -878,26 +878,26 @@
                         10: {},
                         11: {},
                         12: {},
-                        13: {}
+                        13: { "Alex": 0, "Annie": 0, "Nicole": 0, "Sophi": 6.75, "Jeremiah": 0, "Jake": 0, "Jawan": 0, "Nate": 0, "Rizo": 1, "Sage": 4.5, "Savannah": 15, "Shannon": 0, "Kristina": -0.5, "Matt": 0, "MC": 0, "Jason": 0, "Sophie": 0, "Steven": 0 }
                     },
                     draftData: [
-                        { player: "Dan", picks: ["Savannah", "Rizo", "Kristina", "Nate", "Sage", "Annie"], left: 4 },
-                        { player: "Julie", picks: ["Savannah", "Alex", "Sophi", "Nate", "Kristina", "Annie"], left: 4 },
+                        { player: "Dan", picks: ["Savannah", "Rizo", "Kristina", "Nate", "Sage", "Annie"], left: 3 },
+                        { player: "Julie", picks: ["Savannah", "Alex", "Sophi", "Nate", "Kristina", "Annie"], left: 3 },
                         { player: "Lindsay", picks: ["Alex", "Steven", "Sophi", "Shannon", "Jawan", "Annie"], left: 4 },
                         { player: "Brett/Emma", picks: ["Savannah", "Nate", "Sophi", "Shannon", "Matt", "Annie"], left: 2 },
                         { player: "Jack", picks: ["Jake", "Alex", "Shannon", "Nate", "Matt", "Annie"], left: 1 },
-                        { player: "Gab", picks: ["Savannah", "Alex", "Rizo", "Annie", "Jawan", "Sage"], left: 5 },
+                        { player: "Gab", picks: ["Savannah", "Alex", "Rizo", "Annie", "Jawan", "Sage"], left: 4 },
                         { player: "Neil", picks: ["Savannah", "Jake", "Rizo", "Nate", "Matt", "Sage"], left: 3 },
                         { player: "Jenny", picks: ["Savannah", "Alex", "Sophi", "Jason", "Nate", "Sophie"], left: 4 },
                         { player: "David", picks: ["Jake", "MC", "Steven", "Jason", "Jeremiah", "Sophie"], left: 2 },
                         { player: "Sue", picks: ["Jake", "MC", "Sophi", "Sage", "Jawan", "Sophie"], left: 4 },
                         { player: "Ryan", picks: ["Jake", "MC", "Rizo", "Steven", "Jawan", "Sophie"], left: 4 },
-                        { player: "Jason.", picks: ["Jason", "MC", "Steven", "Shannon", "Jawan", "Sophie"], left: 3 },
-                        { player: "Alex.", picks: ["Rizo", "Alex", "Sophi", "Matt", "Kristina", "Sage"], left: 5 },
-                        { player: "Debbie", picks: ["Jake", "MC", "Shannon", "Jawan", "Kristina", "Jeremiah"], left: 2 },
+                        { player: "Jason", picks: ["Jason", "MC", "Steven", "Shannon", "Jawan", "Sophie"], left: 3 },
+                        { player: "Alex", picks: ["Rizo", "Alex", "Sophi", "Matt", "Kristina", "Sage"], left: 4 },
+                        { player: "Debbie", picks: ["Jake", "MC", "Shannon", "Jawan", "Kristina", "Jeremiah"], left: 1 },
                         { player: "Kristen", picks: ["Jason", "Steven", "Matt", "Jeremiah", "Jeremiah", "Sophie"], left: 2 },
-                        { player: "Jenn", picks: ["Jason", "Shannon", "Steven", "Jeremiah", "Kristina", "Sage"], left: 3 },
-                        { player: "Mel", picks: ["Rizo", "MC", "Jason", "Matt", "Jeremiah", "Kristina"], left: 2 }
+                        { player: "Jenn", picks: ["Jason", "Shannon", "Steven", "Jeremiah", "Kristina", "Sage"], left: 2 },
+                        { player: "Mel", picks: ["Rizo", "MC", "Jason", "Matt", "Jeremiah", "Kristina"], left: 1 }
                     ],
                     attendanceData: {
                         "Dan": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
@@ -916,13 +916,13 @@
                         "Debbie": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2],
                         "Kristen": [0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0],
                         "Jenn": [0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
-                        "Mel": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
+                        "Mel": [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0]
+                    },
                     savannahPredictions: {
                         "Dan": 10, "Julie": 6, "Lindsay": 2, "Brett/Emma": 1, "Jack": 2,
                         "Gab": 3, "Neil": 10, "Jenny": 5, "David": 8, "Sue": 2,
                         "Ryan": 0, "Jason": 3, "Alex": 6, "Debbie": 1, "Kristen": 1,
                         "Jenn": 2, "Mel": 0
-                    }
                     },
                     eliminationTimeline: [
                         { week: 1, contestant: "Nicole", reason: "Voted out at the first Tribal Council for being perceived as a weaker player in challenges." },
@@ -933,7 +933,8 @@
                         { week: 5, contestant: "Jason", reason: "Voted out after being unable to secure a solid alliance post-tribe swap." },
                         { week: 6, contestant: "Shannon", reason: "Voted out." },
                         { week: 7, contestant: "Nate", reason: "The first member of the jury; blindsided at the first post-merge Tribal Council." },
-                        { week: 8, contestant: "MC", reason: "The second member of the jury; voted out after an intense live Tribal Council where her attempt to share new information backfired." }
+                        { week: 8, contestant: "MC", reason: "The second member of the jury; voted out after an intense live Tribal Council where her attempt to share new information backfired." },
+                        { week: 13, contestant: "Kristina", reason: "Fourth member of the jury; eliminated in the final 5 before the final tribal council, where Savannah was crowned Sole Survivor." }
                     ]
                 };
             };
@@ -994,6 +995,7 @@
                 const scores = data.draftData.map(entry => {
                     let totalPoints = 0;
                     let attendancePoints = 0;
+                    let savannahBonus = 0;
                     
                     // Calculate contestant points
                     entry.picks.forEach(pick => {
@@ -1005,17 +1007,23 @@
                         attendancePoints = data.attendanceData[entry.player].reduce((sum, val) => sum + val, 0);
                     }
                     
+                    // Get Savannah prediction bonus
+                    if (data.savannahPredictions && data.savannahPredictions[entry.player]) {
+                        savannahBonus = data.savannahPredictions[entry.player];
+                    }
+                    
                     return {
                         player: entry.player,
-                        totalPoints: totalPoints + attendancePoints,
+                        totalPoints: totalPoints + attendancePoints + savannahBonus,
                         contestantPoints: totalPoints,
                         attendancePoints: attendancePoints,
+                        savannahBonus: savannahBonus,
                         contestantsLeft: entry.left
                     };
                 });
                 
                 return scores.sort((a, b) => b.totalPoints - a.totalPoints);
-            }, [contestantTotals, data.draftData, data.attendanceData]);
+            }, [contestantTotals, data.draftData, data.attendanceData, data.savannahPredictions]);
 
             // Sorting function for weekly scores
             const handleSort = (key) => {
@@ -1084,6 +1092,7 @@
                                     <div className="player-stats">
                                         <span>Contestants: {entry.contestantPoints.toFixed(2)} pts</span>
                                         <span>Attendance: {entry.attendancePoints} pts</span>
+                                        <span>Savannah Bonus: {entry.savannahBonus} pts</span>
                                         <span>{entry.contestantsLeft} left</span>
                                     </div>
                                 </div>
@@ -1095,15 +1104,15 @@
                     <div className="summary-stats">
                         <div className="stat-card">
                             <div className="stat-label">Episodes Completed</div>
-                            <div className="stat-value">8/13</div>
+                            <div className="stat-value">13/13</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Contestants Remaining</div>
-                            <div className="stat-value">9</div>
+                            <div className="stat-value">🏆 COMPLETE!</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">Contestants Eliminated</div>
-                            <div className="stat-value">9</div>
+                            <div className="stat-value">10</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-label">League Players</div>
@@ -1216,11 +1225,11 @@
                         </div>
                         <div className="legend-item">
                             <div className="legend-color" style={{background: 'linear-gradient(135deg, #e74c3c, #c0392b)'}}></div>
-                            <span>Uli (4 remaining of 6)</span>
+                            <span>Uli (3 remaining of 6)</span>
                         </div>
                     </div>
                     <div style={{textAlign: 'center', marginBottom: '20px', fontSize: '1.2em', color: '#4ecca3'}}>
-                        <strong>Showing {activeCount} active contestants first, then {sortedForDisplay.length - activeCount} eliminated (sorted by points)</strong>
+                        <strong>SEASON COMPLETE! Showing {activeCount} finalists first, then {sortedForDisplay.length - activeCount} eliminated (sorted by points)</strong>
                     </div>
                     <div className="contestant-grid">
                         {sortedForDisplay.map((contestant, idx) => {
@@ -1575,7 +1584,6 @@
                     
                     alert(`Week ${selectedWeek} scores saved!${votedOutThisWeek ? ` ${votedOutThisWeek} marked as eliminated.` : ''}`);
                 };
-                };
 
                 // Filter to only show contestants who are still active for this week
                 const activeContestantsForWeek = sortedContestants.filter(contestant => {
@@ -1719,7 +1727,7 @@
                 <div className="app-container">
                     <div className="header">
                         <h1>🔥 SURVIVOR 49 🔥</h1>
-                        <div className="subtitle">FANTASY LEAGUE TRACKER</div>
+                        <div className="subtitle">FANTASY LEAGUE TRACKER - SEASON COMPLETE!</div>
                     </div>
 
                     <div className="navigation">
