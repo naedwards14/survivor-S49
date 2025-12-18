@@ -811,6 +811,9 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
+        // Data version for cache busting
+        const DATA_VERSION = 13; // Week 13 complete
+
         // Scoring categories and their point values
         const scoringCategories = [
             { id: 'team_reward', name: 'Won team reward (worth nothing if combined)', points: 1 },
@@ -841,7 +844,15 @@
             // Load data from localStorage or use initial data
             const getInitialData = () => {
                 const savedData = localStorage.getItem('survivorLeagueData');
-                if (savedData) {
+                const savedVersion = localStorage.getItem('survivorLeagueVersion');
+                
+                // Clear old data if version mismatch
+                if (savedData && savedVersion !== String(DATA_VERSION)) {
+                    localStorage.removeItem('survivorLeagueData');
+                    localStorage.setItem('survivorLeagueVersion', String(DATA_VERSION));
+                }
+                
+                if (savedData && savedVersion === String(DATA_VERSION)) {
                     return JSON.parse(savedData);
                 }
                 return {
@@ -934,7 +945,7 @@
                         { week: 6, contestant: "Shannon", reason: "Voted out." },
                         { week: 7, contestant: "Nate", reason: "The first member of the jury; blindsided at the first post-merge Tribal Council." },
                         { week: 8, contestant: "MC", reason: "The second member of the jury; voted out after an intense live Tribal Council where her attempt to share new information backfired." },
-                        { week: 13, contestant: "Kristina", reason: "Fourth member of the jury; eliminated in the final 5 before the final tribal council, where Savannah was crowned Sole Survivor." }
+                        { week: 13, contestant: "Kristina", reason: "Eliminated just before the Final Tribal Council. During the vote, she was pitted against Sage, with the eventual winner Savannah and others deciding her fate. She became the fourth and final member of the jury." }
                     ]
                 };
             };
@@ -963,6 +974,7 @@
             // Save data to localStorage whenever it changes
             useEffect(() => {
                 localStorage.setItem('survivorLeagueData', JSON.stringify(data));
+                localStorage.setItem('survivorLeagueVersion', String(DATA_VERSION));
             }, [data]);
 
             // Calculate total points for each contestant
@@ -1767,18 +1779,6 @@
                         >
                             📅 Attendance
                         </button>
-                        <button 
-                            className={`nav-button ${activeView === 'attendanceEntry' ? 'active' : ''}`}
-                            onClick={() => setActiveView('attendanceEntry')}
-                        >
-                            ✏️ Edit Attendance
-                        </button>
-                        <button 
-                            className={`nav-button ${activeView === 'entry' ? 'active' : ''}`}
-                            onClick={() => setActiveView('entry')}
-                        >
-                            ✏️ Score Entry
-                        </button>
                     </div>
 
                     {activeView === 'leaderboard' && renderLeaderboard()}
@@ -1787,8 +1787,6 @@
                     {activeView === 'weekly' && renderWeeklyScores()}
                     {activeView === 'eliminations' && renderEliminations()}
                     {activeView === 'attendance' && renderAttendance()}
-                    {activeView === 'attendanceEntry' && <AttendanceEntry />}
-                    {activeView === 'entry' && <ScoreEntry />}
                 </div>
             );
         };
